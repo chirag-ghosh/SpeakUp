@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from ..services.notes import testing
 
 router = APIRouter(
     prefix="/notes",
@@ -7,4 +8,4 @@ router = APIRouter(
 
 @router.get("/")
 def notes_check():
-    return {"message": "This is Notes endpoint."}
+    return testing()

@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from ..services.sign import testing
 
 router = APIRouter(
     prefix="/sign",
@@ -7,4 +8,4 @@ router = APIRouter(
 
 @router.get("/")
 def sign_check():
-    return {"message": "This is Sign Language endpoint."}
+    return testing()

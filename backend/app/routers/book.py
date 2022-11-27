@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from ..services.book import testing
 
 router = APIRouter(
     prefix="/book",
@@ -7,4 +8,4 @@ router = APIRouter(
 
 @router.get("/")
 def book_check():
-    return {"message": "This is Book endpoint."}
+    return testing()
