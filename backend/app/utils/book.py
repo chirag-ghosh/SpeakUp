@@ -16,11 +16,11 @@ def processRequest( json, data, headers, params ):
 	result = None
 
 	while True:
-		response = requests.post('https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/RecognizeText', json = json, data = data, headers = headers, params = params )
+		response = requests.post('https://chirag-vision.cognitiveservices.azure.com/vision/v2.0/RecognizeText', json = json, data = data, headers = headers, params = params )
 
 		if response.status_code == 429:
 			print( "Message: %s" % ( response.json() ) )
-			if retries <= int(os.getenv('MaxTrialsPerRequest') or '10'):
+			if retries <= 10:
 				time.sleep(1) 
 				retries += 1
 				continue
@@ -45,7 +45,7 @@ def getOCRTextResult( operationLocation, headers ):
 		response = requests.get(operationLocation, json=None, data=None, headers=headers, params=None)
 		if response.status_code == 429:
 			print("Message: %s" % (response.json()))
-			if retries <= int(os.getenv('MaxTrialsPerRequest') or '10'):
+			if retries <= 10:
 				time.sleep(1)
 				retries += 1
 				continue

@@ -45,7 +45,7 @@ def narrateBook(url, sound = False):
 		all_text += new_page
 		if sound:
 			i += 1
-			app = TextToSpeech(new_page, os.getenv('OcpApimSubscriptionKey') or "")
+			app = TextToSpeech(new_page, os.getenv('SpeechKey') or "")
 			app.get_token()
 			app.save_audio()
 
@@ -63,12 +63,12 @@ class TextToSpeech(object):
 		self.access_token = None
 
 	def get_token(self):
-		response = requests.post("https://westus.api.cognitive.microsoft.com/sts/v1.0/issueToken", headers={'Ocp-Apim-Subscription-Key': self.subscription_key})
+		response = requests.post("https://centralindia.api.cognitive.microsoft.com/sts/v1.0/issuetoken", headers={'Ocp-Apim-Subscription-Key': self.subscription_key})
 		self.access_token = str(response.text)
 
 	def save_audio(self):
 		global i
-		url = 'https://westus.tts.speech.microsoft.com/cognitiveservices/v1'
+		url = 'https://centralindia.tts.speech.microsoft.com/cognitiveservices/v1'
 		headers = {
 			'Authorization': 'Bearer ' + (self.access_token or ''),
 			'Content-Type': 'application/ssml+xml',
@@ -79,10 +79,9 @@ class TextToSpeech(object):
 		xml_body.set('{http://www.w3.org/XML/1998/namespace}lang', 'en-us')
 		voice = ElementTree.SubElement(xml_body, 'voice')
 		voice.set('{http://www.w3.org/XML/1998/namespace}lang', 'en-US')
-		voice.set('name', 'en-US-Guy24kRUS') # Short name for 'Microsoft Server Speech Text to Speech Voice (en-US, Guy24KRUS)'
+		voice.set('name', 'en-IN-NeerjaNeural') # Short name for 'Microsoft Server Speech Text to Speech Voice (en-US, Guy24KRUS)'
 		voice.text = self.tts
 		body = ElementTree.tostring(xml_body)
-
 		response = requests.post(url, headers=headers, data=body)
 		if response.status_code == 200:
 			with open('sample-' + str(i) + '.wav', 'wb') as audio:
@@ -94,13 +93,10 @@ class TextToSpeech(object):
 			print("Reason: " + str(response.reason) + "\n")
 
 	def get_voices_list(self):
-		base_url = 'https://westus.tts.speech.microsoft.com/'
-		path = 'cognitiveservices/voices/list'
-		constructed_url = base_url + path
-		headers = {
-			'Authorization': 'Bearer ' + (self.access_token or ''),
-		}
-		response = requests.get(constructed_url, headers=headers)
+		url = 'https://centralindia.tts.speech.microsoft.com/cognitiveservices/voices/list'
+		headers = {}
+		headers['Ocp-Apim-Subscription-Key'] = os.getenv('CVKey') or ""
+		response = requests.get(url, headers=headers)
 		if response.status_code == 200:
 			print("\nAvailable voices: \n" + response.text)
 		else:
@@ -115,7 +111,6 @@ def showResultinFile(result):
 		s = ""
 		for word in words:
 			s += word['text'] + " "
-		print(s)
 		texty += s
 	return texty
 
@@ -152,7 +147,7 @@ def showResultOnImage( result, img ):
 def text_from_image(image_data: bytes):
 	params = {'mode' : 'Handwritten'}
 	headers = dict()
-	headers['Ocp-Apim-Subscription-Key'] = os.getenv('OcpApimSubscriptionKey') or ""
+	headers['Ocp-Apim-Subscription-Key'] = os.getenv('CVKey') or ""
 	headers['Content-Type'] = 'application/octet-stream'
 
 	json = None
@@ -162,17 +157,16 @@ def text_from_image(image_data: bytes):
 	result = None
 	if (operationLocation != None):
 		headers = {}
-		headers['Ocp-Apim-Subscription-Key'] = os.getenv('OcpApimSubscriptionKey') or ""
+		headers['Ocp-Apim-Subscription-Key'] = os.getenv('CVKey') or ""
 		while True:
 			time.sleep(1)
-			print("Trying")
 			result = getOCRTextResult(operationLocation, headers)
-			if result is not None and (result['status'] == 'Succeeded' or result['status']) == 'Failed':
+			if result is not None and (result['status'] == 'Succeeded' or result['status'] == 'Failed'):
 				break
 	if result is not None and result['status'] == 'Succeeded':
-		data8uint = np.fromstring(image_data, dtype=int, sep=' ')
-		img = cv2.cvtColor(cv2.imdecode(data8uint, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
-		showResultOnImage(result, img)
+		# data8uint = np.fromstring(image_data, dtype=int, sep=' ')
+		# img = cv2.cvtColor(cv2.imdecode(data8uint, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
+		# showResultOnImage(result, img)
 		return showResultinFile(result)
 
 
@@ -196,7 +190,7 @@ def extractPdfText(filePath=''):
 def narrate_book_parse(url, sound=False):     #This function returns text from the book.
 	global i
 	dir_path = os.path.dirname(os.path.realpath(__file__))
-	filename = "pdfExample.pdf"
+	filename = "temporary.pdf"
 	filePath = os.path.join(dir_path, filename)
 	r = requests.get(url, allow_redirects=True, stream=True)
 	with open(filename, 'wb') as f:
@@ -208,7 +202,7 @@ def narrate_book_parse(url, sound=False):     #This function returns text from t
 	for page in all_pages:
 		i += 1
 		all_text += page
-		app = TextToSpeech(page, os.getenv('OcpApimSubscriptionKey') or "")
+		app = TextToSpeech(page, os.getenv('SpeechKey') or "")
 		app.get_token()
 		app.save_audio()
 	i = 0
