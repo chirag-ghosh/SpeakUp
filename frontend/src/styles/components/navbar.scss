@@ -19,6 +19,7 @@
     text-decoration: none;
     font-size: 0.9rem;
     padding-top: 0.75rem;
+    font-weight: 500;
 
     color: rgba(#f49d1a, 0.5);
 
@@ -30,6 +31,7 @@
     &.active {
       background-color: rgba(#f49d1a, 0.15);
       color: rgba(#f49d1a, 0.75);
+      font-weight: 600;
     }
   }
 }
