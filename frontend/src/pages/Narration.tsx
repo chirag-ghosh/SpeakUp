@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import axios from 'axios';
 import { CircleNotch } from 'phosphor-react';
 import { FormEvent, useRef, useState } from 'react';
@@ -9,6 +10,7 @@ function Narration() {
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const [pdfText, setPdfText] = useState<string>();
+  const [pdfAudio, setPdfAudio] = useState<string>();
 
   const modeInputRef = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
 
@@ -24,8 +26,18 @@ function Narration() {
       axios
         .get(`${BACKEND_URL}/book/text?url=${url}`)
         .then((response) => {
-          console.log(response.data);
           setPdfText(response.data);
+          setIsSubmitLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setIsSubmitLoading(false);
+        });
+    } else {
+      axios
+        .get(`${BACKEND_URL}/book/narration?url=${url}`)
+        .then((response) => {
+          setPdfAudio('data:audio/ogg;base64,' + response.data.audio);
           setIsSubmitLoading(false);
         })
         .catch((err) => {
@@ -81,6 +93,11 @@ function Narration() {
         </button>
       </form>
       {mode == 'text' && !isSubmitLoading && pdfText && <div className="text-display">{pdfText}</div>}
+      {mode == 'audio' && !isSubmitLoading && pdfAudio && (
+        <audio src={pdfAudio} controls>
+          Your browser does not support the audio element.
+        </audio>
+      )}
     </div>
   );
 }
