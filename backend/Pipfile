@@ -6,6 +6,13 @@ name = "pypi"
 [packages]
 fastapi = "0.88.0"
 uvicorn = {extras = ["standard"], version = "*"}
+requests = "*"
+pdf2image = "*"
+pypdf2 = "*"
+matplotlib = "*"
+tika = "*"
+numpy = "*"
+opencv-python = "*"
 
 [dev-packages]
 

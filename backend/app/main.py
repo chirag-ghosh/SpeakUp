@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from .routers import book, notes, sign
 
+from dotenv import load_dotenv
+load_dotenv()
+
 app = FastAPI()
 
 app.include_router(book.router)

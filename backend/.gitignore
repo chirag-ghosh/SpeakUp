@@ -19,7 +19,12 @@ docs_build
 venv
 docs.zip
 archive.zip
+.env
 
 # vim temporary files
 *~
 .*.sw?
+
+# temporaries
+*.wav
+*.pdf
