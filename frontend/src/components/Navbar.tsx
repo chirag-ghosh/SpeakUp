@@ -12,7 +12,7 @@ function Navbar() {
         <Info size={40} />
         <div>About</div>
       </NavLink>
-      <NavLink to="/book">
+      <NavLink to="/narration">
         <Books size={40} />
         <div>Books</div>
       </NavLink>
