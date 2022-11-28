@@ -5,6 +5,7 @@
   left: 50%;
   transform: translateX(-50%);
   backdrop-filter: blur(10px);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 8%), 0 4px 12px rgb(0 0 0 / 5%);
 
   display: flex;
   border-radius: 6px;
