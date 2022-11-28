@@ -1,9 +1,10 @@
 .navbar {
   background-color: rgba(#666, 0.1);
-  position: absolute;
+  position: fixed;
   bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
+  backdrop-filter: blur(10px);
 
   display: flex;
   border-radius: 6px;

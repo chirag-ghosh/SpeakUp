@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Notes from './pages/Notes';
 import SignLanguage from './pages/SignLanguage';
 import Navbar from './components/Navbar';
+import About from './pages/About';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route index element={<Home />} />
+          <Route path="about" element={<About />} />
           <Route path="notes" element={<Notes />} />
           <Route path="narration" element={<Narrration />} />
           <Route path="sign" element={<SignLanguage />} />
