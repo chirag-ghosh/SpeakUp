@@ -21,11 +21,13 @@
   box-sizing: border-box;
 }
 
+body {
+  overflow: hidden;
+}
+
 .App {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 3rem;
+  width: 100%;
+  min-height: 100vh;
+  overflow-y: scroll;
   font-family: 'Fredoka One', cursive;
 }
