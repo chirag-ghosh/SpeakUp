@@ -20,6 +20,9 @@ subscription_key = '2734807b84a847c580fdbf18ae250602'
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
+def testing():
+    return {"message": "This is the Note endpoint."}
+
 def processRequest(json, data, headers, params):
     retries = 0
     result = None
