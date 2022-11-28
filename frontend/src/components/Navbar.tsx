@@ -4,23 +4,23 @@ import { NavLink } from 'react-router-dom';
 function Navbar() {
   return (
     <div className="navbar">
-      <NavLink to="/" data-theme="red">
+      <NavLink to="/">
         <House size={40} />
         <div>Home</div>
       </NavLink>
-      <NavLink to="/about" data-theme="orange">
+      <NavLink to="/about">
         <Info size={40} />
         <div>About</div>
       </NavLink>
-      <NavLink to="/book" data-theme="green">
+      <NavLink to="/book">
         <Books size={40} />
         <div>Books</div>
       </NavLink>
-      <NavLink to="/notes" data-theme="blue">
+      <NavLink to="/notes">
         <NotePencil size={40} />
         <div>Notes</div>
       </NavLink>
-      <NavLink to="/sign" data-theme="purple">
+      <NavLink to="/sign">
         <Hand size={40} />
         <div>Sign</div>
       </NavLink>

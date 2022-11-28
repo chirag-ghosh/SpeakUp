@@ -7,49 +7,29 @@
 
   display: flex;
   border-radius: 6px;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0;
 
   a {
     margin: 0.5rem 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(#666, 0.4);
     padding: 0.5rem 1.5rem;
     border-radius: 8px;
     text-decoration: none;
     font-size: 0.9rem;
     padding-top: 0.75rem;
 
-    color: rgba(#000, 0.8);
+    color: rgba(#f49d1a, 0.5);
 
-    &[data-theme='red'] {
-      background-color: rgba(#e14d2a, 0.15);
-      color: rgba(#e14d2a, 0.75);
-    }
-
-    &[data-theme='orange'] {
-      background-color: rgba(#f49d1a, 0.15);
-      color: rgba(#f49d1a, 0.75);
-    }
-
-    &[data-theme='green'] {
-      background-color: rgba(#54b435, 0.15);
-      color: rgba(#54b435, 0.75);
-    }
-
-    &[data-theme='blue'] {
-      background-color: rgba(#009eff, 0.15);
-      color: rgba(#009eff, 0.75);
-    }
-
-    &[data-theme='purple'] {
-      background-color: rgba(#f07dea, 0.15);
-      color: rgba(#f07dea, 0.75);
+    &:hover {
+      background-color: rgba(#f49d1a, 0.1);
+      color: rgba(#f49d1a, 0.6);
     }
 
     &.active {
-      box-shadow: 2px 4px 8px rgba(#000, 0.15);
+      background-color: rgba(#f49d1a, 0.15);
+      color: rgba(#f49d1a, 0.75);
     }
   }
 }
