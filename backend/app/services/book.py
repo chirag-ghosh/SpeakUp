@@ -5,6 +5,7 @@ import PyPDF2
 import wave
 import time
 import cv2
+import io
 import requests
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,7 +15,8 @@ from xml.etree import ElementTree
 from dotenv import load_dotenv
 load_dotenv()
 
-from ..utils.book import imageToArray, processRequest, getOCRTextResult
+from ..utils.ocr import getOcrText
+from ..utils.constants import ttsTokenURL, ttsURL, ttsVoiceListURL
 
 
 all_audio = []
@@ -55,6 +57,13 @@ def narrateBook(url, sound = False):
 	return all_text
 
 
+def imageToArray(pil_image):
+	image_byte_array = io.BytesIO()
+	pil_image.save(image_byte_array, format='PNG')
+	image_data = image_byte_array.getvalue()
+	return image_data
+
+
 class TextToSpeech(object):
 	def __init__(self, to_be_spoken, subscription_key):
 		self.subscription_key = subscription_key
@@ -63,12 +72,11 @@ class TextToSpeech(object):
 		self.access_token = None
 
 	def get_token(self):
-		response = requests.post("https://centralindia.api.cognitive.microsoft.com/sts/v1.0/issuetoken", headers={'Ocp-Apim-Subscription-Key': self.subscription_key})
+		response = requests.post(ttsTokenURL, headers={'Ocp-Apim-Subscription-Key': self.subscription_key})
 		self.access_token = str(response.text)
 
 	def save_audio(self):
 		global i
-		url = 'https://centralindia.tts.speech.microsoft.com/cognitiveservices/v1'
 		headers = {
 			'Authorization': 'Bearer ' + (self.access_token or ''),
 			'Content-Type': 'application/ssml+xml',
@@ -82,7 +90,7 @@ class TextToSpeech(object):
 		voice.set('name', 'en-IN-NeerjaNeural') # Short name for 'Microsoft Server Speech Text to Speech Voice (en-US, Guy24KRUS)'
 		voice.text = self.tts
 		body = ElementTree.tostring(xml_body)
-		response = requests.post(url, headers=headers, data=body)
+		response = requests.post(ttsURL, headers=headers, data=body)
 		if response.status_code == 200:
 			with open('sample-' + str(i) + '.wav', 'wb') as audio:
 				audio.write(response.content)
@@ -93,10 +101,9 @@ class TextToSpeech(object):
 			print("Reason: " + str(response.reason) + "\n")
 
 	def get_voices_list(self):
-		url = 'https://centralindia.tts.speech.microsoft.com/cognitiveservices/voices/list'
 		headers = {}
 		headers['Ocp-Apim-Subscription-Key'] = os.getenv('CVKey') or ""
-		response = requests.get(url, headers=headers)
+		response = requests.get(ttsVoiceListURL, headers=headers)
 		if response.status_code == 200:
 			print("\nAvailable voices: \n" + response.text)
 		else:
@@ -145,24 +152,7 @@ def showResultOnImage( result, img ):
 
 
 def text_from_image(image_data: bytes):
-	params = {'mode' : 'Handwritten'}
-	headers = dict()
-	headers['Ocp-Apim-Subscription-Key'] = os.getenv('CVKey') or ""
-	headers['Content-Type'] = 'application/octet-stream'
-
-	json = None
-
-	operationLocation = processRequest(json, image_data, headers, params)
-
-	result = None
-	if (operationLocation != None):
-		headers = {}
-		headers['Ocp-Apim-Subscription-Key'] = os.getenv('CVKey') or ""
-		while True:
-			time.sleep(1)
-			result = getOCRTextResult(operationLocation, headers)
-			if result is not None and (result['status'] == 'Succeeded' or result['status'] == 'Failed'):
-				break
+	result = getOcrText(image_data)
 	if result is not None and result['status'] == 'Succeeded':
 		# data8uint = np.fromstring(image_data, dtype=int, sep=' ')
 		# img = cv2.cvtColor(cv2.imdecode(data8uint, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)

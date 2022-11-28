@@ -17,6 +17,10 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 model = load_model(os.path.join(dir_path, 'cnn_model_keras2.h5'))
 
 
+def testing():
+    return {"message": "This is the Note endpoint."}
+
+
 def get_image_size():
     img = cv2.imread(os.path.join(dir_path, '100.jpg'), 0)
     return img.shape

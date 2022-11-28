@@ -13,6 +13,8 @@ matplotlib = "*"
 tika = "*"
 numpy = "*"
 opencv-python = "*"
+keras = "*"
+tensorflow = "*"
 
 [dev-packages]
 

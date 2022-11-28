@@ -1,21 +1,13 @@
-import time
 import requests
 import cv2
-import operator
 import numpy as np
 import math
-import wave
 import os
-import json
-import urllib
 import shutil
 from xml.etree import ElementTree
 
-_url = 'https://centralindia.api.cognitive.microsoft.com/vision/v2.0/RecognizeText'
-_key = '02a4a168fa6e4026a19e35352abed9a3'
-_maxNumRetries = 10
-subscription_key = '2734807b84a847c580fdbf18ae250602'
-
+from ..utils.ocr import getOcrText
+from ..utils.constants import ttsTokenURL, ttsURL
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -23,78 +15,12 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 def testing():
     return {"message": "This is the Note endpoint."}
 
-def processRequest(json, data, headers, params):
-    retries = 0
-    result = None
-    while True:
-        response = requests.request(
-            'post', _url, json=json, data=data, headers=headers, params=params)
-        if response.status_code == 429:
-            print("Message: %s" % (response.json()))
-            if retries <= _maxNumRetries:
-                time.sleep(1)
-                retries += 1
-                continue
-            else:
-                print('Error: failed after retrying!')
-                break
-        elif response.status_code == 202:
-            result = response.headers['Operation-Location']
-        else:
-            print("Error code: %d" % (response.status_code))
-            print("Message: %s" % (response.json()))
-        break
-    return result
-
-
-def getOCRTextResult(operationLocation, headers):
-    retries = 0
-    result = None
-    while True:
-        response = requests.request(
-            'get', operationLocation, json=None, data=None, headers=headers, params=None)
-        if response.status_code == 429:
-            print("Message: %s" % (response.json()))
-            if retries <= _maxNumRetries:
-                time.sleep(1)
-                retries += 1
-                continue
-            else:
-                print('Error: failed after retrying!')
-                break
-        elif response.status_code == 200:
-            result = response.json()
-        else:
-            print("Error code: %d" % (response.status_code))
-            print("Message: %s" % (response.json()))
-        break
-    return result
-
 
 def gimme_text_and_bounding_boxs(img_path):
     pathToFileInDisk = img_path
     with open(pathToFileInDisk, 'rb') as f:
         data = f.read()
-    # Computer Vision parameters
-    params = {'mode': 'Handwritten'}
-    headers = dict()
-    print(_key)
-    headers['Ocp-Apim-Subscription-Key'] = _key
-    headers['Content-Type'] = 'application/octet-stream'
-    json = None
-    operationLocation = processRequest(json, data, headers, params)
-    result = None
-    if (operationLocation != None):
-        headers = {}
-        headers['Ocp-Apim-Subscription-Key'] = _key
-        while True:
-            time.sleep(1)
-            result = getOCRTextResult(operationLocation, headers)
-            if result['status'] == 'Succeeded' or result['status'] == 'Failed':
-                break
-    return result
-
-# return Array(Tuple(string_type, string_val))
+    return getOcrText(data)
 
 
 def gimme_proper_text(text_bnd_boxs_result, column_len, row_len, inverted):
@@ -234,19 +160,15 @@ def show_result_on_image(img_path, text_with_types, inverted):
     cv2.imwrite(os.path.join(dir_path, 'notes_output_image.jpg'), img)
 
 
-def get_my_audio_token(subscription_key):
-    fetch_token_url = "https://centralindia.api.cognitive.microsoft.com/sts/v1.0/issueToken"
+def get_my_audio_token():
     headers = {
-        'Ocp-Apim-Subscription-Key': subscription_key
+        'Ocp-Apim-Subscription-Key': os.getenv('SpeechKey') or ""
     }
-    response = requests.post(fetch_token_url, headers=headers)
+    response = requests.post(ttsTokenURL, headers=headers)
     return str(response.text)
 
 
 def save_audio(access_token, text_to_be_spoken):
-    base_url = 'https://centralindia.tts.speech.microsoft.com/'
-    path = 'cognitiveservices/v1'
-    constructed_url = base_url + path
     headers = {
         'Authorization': 'Bearer ' + access_token,
         'Content-Type': 'application/ssml+xml',
@@ -257,11 +179,11 @@ def save_audio(access_token, text_to_be_spoken):
     xml_body.set('{http://www.w3.org/XML/1998/namespace}lang', 'en-us')
     voice = ElementTree.SubElement(xml_body, 'voice')
     voice.set('{http://www.w3.org/XML/1998/namespace}lang', 'en-US')
-    # Short name for 'Microsoft Server Speech Text to Speech Voice (en-US, Guy24KRUS)'
-    voice.set('name', 'en-US-GuyNeural')
+    
+    voice.set('name', 'en-IN-NeerjaNeural')
     voice.text = text_to_be_spoken
     body = ElementTree.tostring(xml_body)
-    response = requests.post(constructed_url, headers=headers, data=body)
+    response = requests.post(ttsURL, headers=headers, data=body)
     if response.status_code == 200:
         with open(os.path.join(dir_path, 'notes_audio.wav'), 'wb') as audio:
             audio.write(response.content)
@@ -291,14 +213,13 @@ def note_make(url=None, img_path="notes_input_img.jpg", just_img=False):
     img_path = os.path.join(dir_path, img_path)
     if just_img:
         return os.path.join(dir_path, 'notes_output_image.jpg')
-    print(url)
+    if url is None:
+        return
     resp = requests.get(url, stream=True)
     local_file = open(img_path, "wb")
     resp.raw.decode_content = True
     print(resp.raw)
     shutil.copyfileobj(resp.raw, local_file)
-    # print(type(img_path))
-    # print(dir_path)
     print(local_file)
     shp = cv2.imread(img_path).shape
     column_len = shp[0]
@@ -309,7 +230,7 @@ def note_make(url=None, img_path="notes_input_img.jpg", just_img=False):
         text_bnd_boxs_result, column_len, row_len, inverted)
     show_result_on_image(img_path, text_with_types, inverted)
     text_to_be_spoken = gimme_the_final_text(text_with_types)
-    access_token = get_my_audio_token(subscription_key)
+    access_token = get_my_audio_token()
     save_audio(access_token, text_to_be_spoken)
     return os.path.join(dir_path, 'notes_audio.wav')
 
