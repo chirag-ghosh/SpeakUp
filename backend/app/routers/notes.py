@@ -22,9 +22,9 @@ def img_to_bb(url:str):
 
 @router.get("/narration")
 def note_to_audio(url:str):
-    audio_path = note_make(url, sound = True)
+    text, audio_path = note_make(url, sound = True)
     if audio_path is None:
         return {}
     with open(audio_path, 'rb') as audio_file:
         encoded_file = base64.b64encode(audio_file.read())
-    return {'audio':encoded_file.decode('utf-8', errors='replace')}
+    return {'text': text, 'audio':encoded_file.decode('utf-8', errors='replace')}

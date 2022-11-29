@@ -230,7 +230,7 @@ def note_make(url, img_path="notes_input_img.jpg", sound = False):
         return text_to_be_spoken
     access_token = get_my_audio_token()
     save_audio(access_token, text_to_be_spoken)
-    return os.path.join(dir_path, 'notes_audio.wav')
+    return text_to_be_spoken, os.path.join(dir_path, 'notes_audio.wav')
 
 
 if __name__ == "__main__":
