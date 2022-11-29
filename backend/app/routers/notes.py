@@ -1,6 +1,5 @@
 import base64
 from fastapi import APIRouter
-from fastapi.responses import FileResponse
 
 from ..services.notes import note_make, testing
 

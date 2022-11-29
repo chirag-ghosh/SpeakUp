@@ -15,6 +15,8 @@ numpy = "*"
 opencv-python = "*"
 keras = "*"
 tensorflow = "*"
+speechrecognition = "*"
+pocketsphinx = "*"
 
 [dev-packages]
 
