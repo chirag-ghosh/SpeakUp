@@ -45,7 +45,7 @@ def getSignVideo(url_to_audio):
         frame = cv2.imread(images[0])
         height, width, layers = frame.shape
 
-        video = cv2.VideoWriter(os.path.join(dir_path, 'output.avi'), cv2.VideoWriter_fourcc(*'XVID'), 30, (width, height))
+        video = cv2.VideoWriter(os.path.join(dir_path, 'output.mp4'), cv2.VideoWriter_fourcc(*'MP4V'), 30, (width, height))
 
         for image in images:
             for _ in range(20):
@@ -53,5 +53,5 @@ def getSignVideo(url_to_audio):
 
         cv2.destroyAllWindows()
         video.release()
-        print(os.path.join(dir_path, 'output.avi'))
-        return os.path.join(dir_path, 'output.avi')
+        print(os.path.join(dir_path, 'output.mp4'))
+        return os.path.join(dir_path, 'output.mp4')
