@@ -209,12 +209,8 @@ def tell_me_if_its_inverted(text_bnd_boxs_result):
     return False
 
 
-def note_make(url=None, img_path="notes_input_img.jpg", just_img=False):
+def note_make(url, img_path="notes_input_img.jpg", sound = False):
     img_path = os.path.join(dir_path, img_path)
-    if just_img:
-        return os.path.join(dir_path, 'notes_output_image.jpg')
-    if url is None:
-        return
     resp = requests.get(url, stream=True)
     local_file = open(img_path, "wb")
     resp.raw.decode_content = True
@@ -230,6 +226,8 @@ def note_make(url=None, img_path="notes_input_img.jpg", just_img=False):
         text_bnd_boxs_result, column_len, row_len, inverted)
     show_result_on_image(img_path, text_with_types, inverted)
     text_to_be_spoken = gimme_the_final_text(text_with_types)
+    if sound == False:
+        return text_to_be_spoken
     access_token = get_my_audio_token()
     save_audio(access_token, text_to_be_spoken)
     return os.path.join(dir_path, 'notes_audio.wav')

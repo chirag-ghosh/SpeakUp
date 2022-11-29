@@ -13,20 +13,18 @@ router = APIRouter(
 def notes_check():
     return testing()
 
-@router.get("/image")
-def img_to_bb():
-    img_src = note_make(just_img=True)
-    if img_src is None:
+@router.get("/text")
+def img_to_bb(url:str):
+    text = note_make(url)
+    if text is None:
         return {}
-    response = FileResponse(img_src)
-    return response
+    return text
 
-@router.get("/audio")
+@router.get("/narration")
 def note_to_audio(url:str):
-    audio_path = note_make(url)
+    audio_path = note_make(url, sound = True)
     if audio_path is None:
         return {}
     with open(audio_path, 'rb') as audio_file:
         encoded_file = base64.b64encode(audio_file.read())
-    image_path = note_make(just_img=True)
-    return {'audio':encoded_file.decode('utf-8', errors='replace'), 'image':image_path}
+    return {'audio':encoded_file.decode('utf-8', errors='replace')}
