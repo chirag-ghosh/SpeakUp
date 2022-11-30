@@ -1,5 +1,6 @@
 import base64
 from fastapi import APIRouter
+from fastapi.responses import FileResponse
 from ..services.sign import testing, getSignVideo
 
 router = APIRouter(
@@ -14,6 +15,4 @@ def sign_check():
 @router.get("/video")
 def sign_video(url:str):
     videoPath = getSignVideo(url)
-    with open(videoPath, 'rb') as videoFile:
-        encoded_file = base64.b64encode(videoFile.read())
-    return {'video':encoded_file.decode('utf-8', errors='replace')}
+    return FileResponse(videoPath)

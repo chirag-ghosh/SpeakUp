@@ -15,9 +15,10 @@ function SignLanguage() {
     setIsSubmitLoading(true);
 
     axios
-      .get(`${BACKEND_URL}/sign/video?url=${url}`)
+      .get(`${BACKEND_URL}/sign/video?url=${url}`, { responseType: 'blob' })
       .then((response) => {
-        setSignVideo('data:video/mp4;base64,' + response.data.video);
+        console.log(response.data, URL.createObjectURL(response.data));
+        setSignVideo(URL.createObjectURL(response.data));
         setIsSubmitLoading(false);
       })
       .catch((err) => {
