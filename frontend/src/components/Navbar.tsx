@@ -1,4 +1,4 @@
-import { Books, Hand, House, Info, NotePencil } from 'phosphor-react';
+import { Books, DotsNine, Hand, House, Info, NotePencil } from 'phosphor-react';
 import { NavLink } from 'react-router-dom';
 
 function Navbar() {
@@ -25,7 +25,7 @@ function Navbar() {
         <div>Sign</div>
       </NavLink>
       <NavLink to="/braille">
-        <Hand size={40} />
+        <DotsNine size={40} />
         <div>Braille</div>
       </NavLink>
     </div>
