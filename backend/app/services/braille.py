@@ -11,7 +11,8 @@ def testing():
     return {"message": "This is the Braille endpoint."}
 
 def url_to_braille(url):
-    return text_to_braille(url_to_text(url))
+    text = url_to_text(url)
+    return text, text_to_braille(text)
 
 def text_to_braille(in_text):
     braille_text = convertText(in_text)

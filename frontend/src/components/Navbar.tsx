@@ -24,6 +24,10 @@ function Navbar() {
         <Hand size={40} />
         <div>Sign</div>
       </NavLink>
+      <NavLink to="/braille">
+        <Hand size={40} />
+        <div>Braille</div>
+      </NavLink>
     </div>
   );
 }

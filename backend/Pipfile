@@ -17,6 +17,7 @@ keras = "*"
 tensorflow = "*"
 speechrecognition = "*"
 pocketsphinx = "*"
+pybraille = "*"
 
 [dev-packages]
 

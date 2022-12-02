@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import book, notes, sign
+from .routers import book, notes, sign, braille
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -24,6 +24,7 @@ app.add_middleware(
 app.include_router(book.router)
 app.include_router(notes.router)
 app.include_router(sign.router)
+app.include_router(braille.router)
 
 @app.get("/")
 def root_check():
