@@ -33,7 +33,7 @@ function SignLanguage() {
       <form onSubmit={submitForm}>
         <div className="item-group">
           <div className="form-item form-item-long">
-            <div className="label">Please enter the pdf link here</div>
+            <div className="label">Please enter the audio link here</div>
             <input type="url" value={url} onChange={(event) => setUrl(event.target.value)} />
           </div>
         </div>
