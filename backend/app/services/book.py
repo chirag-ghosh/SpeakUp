@@ -240,7 +240,3 @@ def combine_all_audio():
 	output.close()
 	all_audio = []
 	return outfile
-
-
-if __name__ == "__main__":
-	print(narrateBook('https://github.com/hackabit19/Apes_together_strong/raw/master/backend/pdfExample.pdf', sound=False))

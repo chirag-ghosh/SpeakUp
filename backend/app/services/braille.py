@@ -62,6 +62,3 @@ def showResultinFile(result):
 			s += word['text'] + " "
 		texty += s
 	return texty
-
-if __name__ == "__main__":
-    print(url_to_braille("https://www.africau.edu/images/default/sample.pdf"))

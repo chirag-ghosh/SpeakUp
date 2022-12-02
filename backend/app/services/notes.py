@@ -231,8 +231,3 @@ def note_make(url, img_path="notes_input_img.jpg", sound = False):
     access_token = get_my_audio_token()
     save_audio(access_token, text_to_be_spoken)
     return text_to_be_spoken, os.path.join(dir_path, 'notes_audio.wav')
-
-
-if __name__ == "__main__":
-    url = "https://imagizer.imageshack.com/img923/8822/CIxWwU.png"
-    note_make(url, "box_img.jpg")
